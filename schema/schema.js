@@ -209,11 +209,7 @@ const Mutation = new GraphQLObjectType({
           stream.pipe(streamLoad);
         });
 
-        let updatedNote = new Note({
-          id: args.id,
-        })
-
-        return updatedNote;
+        return found;
       }
     }
   }
