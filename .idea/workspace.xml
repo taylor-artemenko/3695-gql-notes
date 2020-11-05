@@ -11,7 +11,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e9c23340-83ea-49ba-8a3d-5fad5ec0e92b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +47,7 @@
       <workItem from="1604550344506" duration="4435000" />
       <workItem from="1604555142520" duration="1805000" />
       <workItem from="1604557526159" duration="81000" />
+      <workItem from="1604558279061" duration="171000" />
     </task>
     <servers />
   </component>
@@ -62,6 +64,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state width="1256" height="395" key="GridCell.Tab.0.bottom" timestamp="1604456375240">
