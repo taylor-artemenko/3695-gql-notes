@@ -21,3 +21,6 @@ Please create this direcotry after pulling the repo and include the following fi
       }
       ```
 Once those files are created, run ```npm install``` then ```npm start```
+
+NOTE: We used a chrome extension called Altair GraphQL Client to upload image file to the API,
+the screenshots included in this repo are from that application.
