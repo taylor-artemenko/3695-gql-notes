@@ -16,6 +16,7 @@ const {
   GraphQLID, 
   GraphQLString,
   GraphQLList,
+  GraphQLBoolean
 } = graphql;
 const { GraphQLUpload } = require('graphql-upload');
 
@@ -137,6 +138,14 @@ const Mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
 
+        let note = new Note({
+          title: args.title,
+          description: args.description,
+          contents: args.contents,
+          priority: args.priority,
+          userID: args.userID,
+        })
+
         if (args.image !== undefined) {
           const { createReadStream } = await args.image;
           const stream = createReadStream();
@@ -145,14 +154,7 @@ const Mutation = new GraphQLObjectType({
               if (result) {
                 const resultUrl = result.secure_url;
                 const resultSecureUrl = result.secure_url;
-                let note = new Note({
-                  title: args.title,
-                  description: args.description,
-                  contents: args.contents,
-                  priority: args.priority,
-                  userID: args.userID,
-                  image_url: resultSecureUrl
-                });
+                note.image_url = resultSecureUrl;
                 note.save();
                 resolve(resultUrl)
               } else {
@@ -160,14 +162,6 @@ const Mutation = new GraphQLObjectType({
               }
             });
             stream.pipe(streamLoad);
-          });
-
-          let note = new Note({
-            title: args.title,
-            description: args.description,
-            contents: args.contents,
-            priority: args.priority,
-            userID: args.userID,
           });
 
           return note;
@@ -185,13 +179,14 @@ const Mutation = new GraphQLObjectType({
       },
     },
     updateNote: {
-      type: NoteType,
+      type: GraphQLBoolean,
       args: {
-        id: { type: GraphQLString },
+        id: { type: GraphQLID },
         image: { type: GraphQLUpload },
       },
       async resolve(parent, args) {
         let found = Note.findById(args.id);
+        let resultSecureUrl = '';
 
         const { createReadStream } = await args.image;
         const stream = createReadStream();
@@ -199,8 +194,7 @@ const Mutation = new GraphQLObjectType({
           const streamLoad = cloudinary.uploader.upload_stream(function (error, result) {
             if (result) {
               const resultUrl = result.secure_url;
-              const resultSecureUrl = result.secure_url;
-              found.updateOne({ image_url: resultSecureUrl });
+              resultSecureUrl = result.secure_url;
               resolve(resultUrl)
             } else {
               reject(error);
@@ -208,8 +202,8 @@ const Mutation = new GraphQLObjectType({
           });
           stream.pipe(streamLoad);
         });
-
-        return found;
+        await found.updateOne({ image_url: resultSecureUrl });
+        return true;
       }
     }
   }
