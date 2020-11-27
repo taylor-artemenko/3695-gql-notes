@@ -23,5 +23,3 @@ NOTE: The cloudConf.js file is technically unecessary for this branch as its not
       }
       ```
 Once those files are created, run ```npm install``` then ```npm start```
-
-NOTE: Screenshots of this application running can be found in the screenshots.pdf file
