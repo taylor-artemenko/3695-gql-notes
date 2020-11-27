@@ -104,6 +104,18 @@ const RootQuery = new GraphQLObjectType({
         return result;
       }
     },
+    // Get list of Notes by title (titles can be the same)
+    notesByTitle: {
+      type: new GraphQLList(NoteType),
+      args: {
+        title: { type: GraphQLString }
+      },
+      resolve(parent, args) {
+        const result = Note.find({ title: args.title });
+
+        return result
+      }
+    },
     // Get single user based on username
     user: {
       type: UserType,
