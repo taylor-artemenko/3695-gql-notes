@@ -6,9 +6,11 @@ const noteSchema = new Schema({
   description: String,
   contents: String,
   priority: String,
-  userID: String,
+  ownerID: String,
   image_url: Array,
-  dueDate: String
+  createdDate: String,
+  dueDate: String,
+  collabNames: String
 });
 
 module.exports = mongoose.model('Note', noteSchema);

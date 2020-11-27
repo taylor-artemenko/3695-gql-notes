@@ -3,13 +3,16 @@ const bodyParser = require('body-parser');
 const { graphqlHTTP } = require('express-graphql');
 const { graphqlUploadExpress } = require('graphql-upload');
 const mongoose = require('mongoose');
-const mongooseConf = require('./conf/mongooseConn.js');
-const schema = require('./schema/schema');
-const checkUpcoming = require('./checkUpcoming.js');
+const mongooseConf = require('../conf/mongooseConn.js');
+const schema = require('../schema/schema');
+const checkUpcoming = require('../checkUpcoming.js');
+const serveless = require('serverless-http');
 
 // Server setup
 const app = express();
 const port = process.env.PORT || 4000;
+
+const router = express.Router();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -23,19 +26,19 @@ mongoose.connection.once('open', () => {
 
 checkUpcoming.checkUpcoming();
 
-app.use('/graphql',
+router.use('/graphql',
   graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
   graphqlHTTP({
   schema: schema,
   graphiql: true,
 }));
 
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
   res.json({ 
     message: 'this is the home page' 
   });
 });
 
-app.listen(port, () => {
-  console.log('app is listening on port ' + port);
-});
+app.use('/.netlify/functions/server', router);
+
+module.exports.handler = serveless(app);

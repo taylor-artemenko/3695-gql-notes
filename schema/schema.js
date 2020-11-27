@@ -1,5 +1,6 @@
 const graphql = require('graphql');
 const cloudinary = require('cloudinary').v2;
+const moment = require('moment');
 const Note = require('../models/note');
 const User = require('../models/user');
 const Upcoming = require('../models/upcoming');
@@ -11,10 +12,10 @@ cloudinary.config({
   api_secret: cloudConf.api_secret
 });
 
-const { 
-  GraphQLSchema, 
-  GraphQLObjectType, 
-  GraphQLID, 
+const {
+  GraphQLSchema,
+  GraphQLObjectType,
+  GraphQLID,
   GraphQLString,
   GraphQLList,
   GraphQLBoolean
@@ -28,13 +29,22 @@ const NoteType = new GraphQLObjectType({
     title: { type: GraphQLString },
     description: { type: GraphQLString },
     contents: { type: GraphQLString },
-    priority: {type: GraphQLString },
-    image_url: {type: GraphQLString},
+    priority: { type: GraphQLString },
+    image_url: { type: GraphQLString },
+    createdDate: { type: GraphQLString },
     dueDate: { type: GraphQLString },
-    user: {
+    owner: {
       type: UserType,
       resolve(parent, args) {
-        const result = User.findById(parent.userID);
+        const result = User.findById(parent.ownerID);
+
+        return result;
+      }
+    },
+    collaborators: {
+      type: new GraphQLList(UserType),
+      resolve(parent, args) {
+        const result = User.find({ username: { $in: parent.collabNames.split(',') } });
 
         return result;
       }
@@ -74,6 +84,30 @@ const RootQuery = new GraphQLObjectType({
         return result;
       }
     },
+    // Get single Note based on ID
+    note: {
+      type: NoteType,
+      args: {
+        id: { type: GraphQLID }
+      },
+      resolve(parent, args) {
+        const result = Note.findById(args.id);
+
+        return result;
+      }
+    },
+    // Get Notes by title
+    notesByTitle: {
+      type: new GraphQLList(NoteType),
+      args: {
+        title: { type: GraphQLString }
+      },
+      resolve(parent, args) {
+        const result = Note.find({ title: args.title });
+
+        return result
+      }
+    },
     // Get all Notes
     notes: {
       type: new GraphQLList(NoteType),
@@ -104,16 +138,16 @@ const RootQuery = new GraphQLObjectType({
         return result;
       }
     },
-    // Get list of Notes by title (titles can be the same)
-    notesByTitle: {
+    // Get list of Notes by createdDate
+    notesByCreatedDate: {
       type: new GraphQLList(NoteType),
       args: {
-        title: { type: GraphQLString }
+        createdDate: { type: GraphQLString }
       },
       resolve(parent, args) {
-        const result = Note.find({ title: args.title });
+        const result = Note.find({ createdDate: args.createdDate });
 
-        return result
+        return result;
       }
     },
     // Get single user based on username
@@ -145,7 +179,7 @@ const Mutation = new GraphQLObjectType({
           username: args.username,
           email: args.email
         });
-                
+
         return user.save();
       }
     },
@@ -156,18 +190,24 @@ const Mutation = new GraphQLObjectType({
         description: { type: GraphQLString },
         contents: { type: GraphQLString },
         priority: {type: GraphQLString },
-        userID: { type: GraphQLID },
+        ownerID: { type: GraphQLID },
         image: { type: GraphQLUpload },
-        dueDate: { type: GraphQLString }
+        createdDate: { type: GraphQLString },
+        dueDate: { type: GraphQLString },
+        collabNames: { type: GraphQLString }
       },
       async resolve(parent, args) {
+        const currentDate = moment().format('YYYY-MM-DD');
+
         let note = new Note({
           title: args.title,
           description: args.description,
           contents: args.contents,
           priority: args.priority,
-          userID: args.userID,
-          dueDate: args.dueDate
+          ownerID: args.ownerID,
+          createdDate: currentDate,
+          dueDate: args.dueDate,
+          collabNames: args.collabNames
         })
 
         if (args.image !== undefined) {
@@ -195,8 +235,10 @@ const Mutation = new GraphQLObjectType({
             description: args.description,
             contents: args.contents,
             priority: args.priority,
-            userID: args.userID,
-            dueDate: args.dueDate
+            ownerID: args.ownerID,
+            createdDate: currentDate,
+            dueDate: args.dueDate,
+            collabNames: args.collabNames
           });
 
           return note.save();
