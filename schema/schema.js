@@ -29,7 +29,7 @@ const NoteType = new GraphQLObjectType({
     description: { type: GraphQLString },
     contents: { type: GraphQLString },
     priority: { type: GraphQLString },
-    image_url: { type: [GraphQLString] },
+    image_url: { type: GraphQLString },
     createdDate: { type: GraphQLString },
     dueDate: { type: GraphQLString },
     owner: {
