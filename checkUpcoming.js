@@ -4,12 +4,13 @@ const Note = require('./models/note');
 const Upcoming = require('./models/upcoming');
 
 const checkUpcoming = () => {
-  //const cronTab = '1 0 */1 * *'
-  const cronTab = '*/10 * * * * *';
+  //const cronTab = '1 0 */1 * *'; //every day
+  const cronTab = '*/1 * * * *'; // every minute
+  //const cronTab = '*/10 * * * * *'; // every 10 minutes
   const todayDate = moment().format('YYYY-MM-DD');
 
   cron.schedule(cronTab, () => {
-    console.log('todays date: ' + todayDate);
+    console.log('running test');
     Note.find({ dueDate: todayDate }, (err, notes) => {
       if (err) {
         return console.error(err);
