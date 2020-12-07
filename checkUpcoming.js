@@ -5,8 +5,7 @@ const Upcoming = require('./models/upcoming');
 
 const checkUpcoming = () => {
   //const cronTab = '1 0 */1 * *'; //every day
-  const cronTab = '*/1 * * * *'; // every minute
-  //const cronTab = '*/10 * * * * *'; // every 10 minutes
+  const cronTab = '*/10 * * * * *'; // every 10 minutes
   const todayDate = moment().format('YYYY-MM-DD');
 
   cron.schedule(cronTab, () => {
@@ -22,9 +21,11 @@ const checkUpcoming = () => {
           description: notes[i].description,
           contents: notes[i].content,
           priority: [i].priority,
-          userID: notes[i].userID,
+          ownerID: notes[i].ownerID,
           image_url: notes[i].image_url,
-          dueDate: notes[i].dueDate
+          createdDate: notes[i].createdDate,
+          dueDate: notes[i].dueDate,
+          collabNames: notes[i].collabNames
         });
 
         upcoming.save();

@@ -6,9 +6,11 @@ const upcomingSchema = new Schema({
   description: String,
   contents: String,
   priority: String,
-  userID: String,
-  image_url: String,
-  dueDate: String
+  ownerID: String,
+  image_url: Array,
+  createdDate: String,
+  dueDate: String,
+  collabNames: String
 }, {collection: 'upcoming'});
 
 module.exports = mongoose.model('Upcoming', upcomingSchema);
