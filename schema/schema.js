@@ -83,18 +83,6 @@ const RootQuery = new GraphQLObjectType({
         return result;
       }
     },
-    // Get single Note based on ID
-    note: {
-      type: NoteType,
-      args: {
-        id: { type: GraphQLID }
-      },
-      resolve(parent, args) {
-        const result = Note.findById(args.id);
-
-        return result;
-      }
-    },
     // Get Notes by title
     notesByTitle: {
       type: new GraphQLList(NoteType),
