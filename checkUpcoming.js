@@ -9,7 +9,7 @@ const checkUpcoming = () => {
   const todayDate = moment().format('YYYY-MM-DD');
 
   cron.schedule(cronTab, () => {
-    console.log(todayDate);
+    console.log('todays date: ' + todayDate);
     Note.find({ dueDate: todayDate }, (err, notes) => {
       if (err) {
         return console.error(err);
