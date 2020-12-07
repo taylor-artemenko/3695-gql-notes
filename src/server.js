@@ -12,7 +12,6 @@ const app = express();
 
 const router = express.Router();
 
-// app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Database connection
@@ -25,6 +24,7 @@ mongoose.connection.once('open', () => {
 checkUpcoming.checkUpcoming();
 
 router.use('/graphql',
+  bodyParser.json(),
   graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10, maxFieldSize: 1024 * 1024 * 10 }),
   graphqlHTTP({
   schema: schema,
