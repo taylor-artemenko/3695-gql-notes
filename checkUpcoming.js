@@ -4,8 +4,8 @@ const Note = require('./models/note');
 const Upcoming = require('./models/upcoming');
 
 const checkUpcoming = () => {
-  //const cronTab = '1 0 */1 * *'; //every day
-  const cronTab = '*/10 * * * * *'; // every 10 minutes
+  const cronTab = '1 0 */1 * *'; //every day
+  //const cronTab = '*/10 * * * * *'; // every 10 minutes
   const todayDate = moment().format('YYYY-MM-DD');
 
   cron.schedule(cronTab, () => {
