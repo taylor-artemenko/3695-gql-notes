@@ -25,7 +25,7 @@ mongoose.connection.once('open', () => {
 checkUpcoming.checkUpcoming();
 
 router.use('/graphql',
-  graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
+  graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10, maxFieldSize: 1024 * 1024 * 10 }),
   graphqlHTTP({
   schema: schema,
   graphiql: true,
